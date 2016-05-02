@@ -1,0 +1,11 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "mongodb",
+    "host": "ds059155.mlab.com", 
+    "database": "whistle", 
+    "username": "sankalp0o", 
+    "password": "aasaan123", 
+    "port": 59155 
+  }
+}

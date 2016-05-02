@@ -1,0 +1,25 @@
+product: '1.0.0'
+
+info:
+  name: whistle-backend
+  title: whistle-backend
+  version: 1.0.0
+
+apis:
+  'whistle-backend':
+    $ref: whistle-backend.yaml
+
+visibility:
+  view:
+    type: public
+  subscribe:
+    type: authenticated
+
+plans:
+  default:
+    title: Default Plan
+    description: Default Plan
+    approval: false
+    rate-limit:
+      value: 100/hour
+      hard-limit: false
