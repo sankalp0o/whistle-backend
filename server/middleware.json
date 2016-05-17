@@ -45,6 +45,5 @@
     "loopback#urlNotFound": {}
   },
   "final:after": {
-    "loopback#errorHandler": {}
   }
 }
