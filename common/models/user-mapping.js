@@ -61,6 +61,7 @@ module.exports = function(UserMapping) {
                                     // console.log("----------", userMappingResponseobj, pendingUsersobj);
                                     if (userMappingResponseobj) {
                                         pendingUsersobj.status = userMappingResponseobj.status
+                                        pendingUsersobj.userMappingId = userMappingResponseobj.id
                                     }
                                     return userMappingResponseobj.receiver === pendingUsersobj.id;
 
@@ -98,10 +99,8 @@ module.exports = function(UserMapping) {
     );
 
 
-    UserMapping.getRelation = function(callback) {
-
+    UserMapping.getRelation = function(senderId, receiverId, callback) {
         var response = "new relation";
-
         callback(null, response);
     };
     UserMapping.remoteMethod(
