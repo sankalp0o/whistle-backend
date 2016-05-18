@@ -58,10 +58,13 @@ module.exports = function(UserMapping) {
                         function mergeByProperty(pendingUsers, userMappingResponse) {
                             _.each(pendingUsers, function(pendingUsersobj) {
                                 var userMappingResponseobj = _.filter(userMappingResponse, function(userMappingResponseobj) {
+                                    // console.log("----------", userMappingResponseobj, pendingUsersobj);
+                                    if (userMappingResponseobj) {
+                                        pendingUsersobj.status = userMappingResponseobj.status
+                                    }
                                     return userMappingResponseobj.receiver === pendingUsersobj.id;
+
                                 });
-                                if(userMappingResponseobj)
-                                pendingUsers.status = userMappingResponseobj.status
                                 // console.log("userMappingResponseobj----------",userMappingResponseobj);
                                 // console.log("pendingUsersobj----------",pendingUsersobj);
                                 //If the object already exist extend it with the new values from userMappingResponse, otherwise just add the new object to pendingUsers
