@@ -99,13 +99,42 @@ module.exports = function(UserMapping) {
     );
 
 
-    UserMapping.getRelation = function(senderId, receiverId, callback) {
-        var response = "new relation";
-        callback(null, response);
+    UserMapping.getRelation = function(userMappingId, userId, callback) {
+        var user = UserMapping.app.models.user;
+        console.log(userMappingId, userId);
+        UserMapping.find({
+                where: {
+                    id: userMappingId
+                }
+            },
+            function(err, userMappingResponse) {
+                console.log("userMappingResponse------", userMappingResponse);
+                user.find({
+                    where: {
+                        id: userId
+                    }
+                }, function(err, pendingUsers) {
+                    console.log("pending users", pendingUsers);
+                    var response;
+                    pendingUsers[0].status = userMappingResponse[0].status;
+                    pendingUsers[0].userMappingId = userMappingResponse[0].id;
+                    console.log("response ---------", pendingUsers);
+                    callback(null, pendingUsers);
+                });
+
+            });
     };
+
     UserMapping.remoteMethod(
         'getRelation', {
             http: { path: '/getRelation', verb: 'get' },
+            accepts: [{
+                arg: 'userMappingId',
+                type: 'string'
+            }, {
+                arg: 'userId',
+                type: 'string'
+            }],
             returns: { arg: 'getRelation', type: 'string' }
         }
     );
