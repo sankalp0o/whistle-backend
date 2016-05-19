@@ -6,6 +6,9 @@ module.exports = function(User) {
 
         User.find({},
             function(err, users) {
+                _.remove(users, function(user) {
+                    return user.id == userId;
+                });
                 UserMapping.find({
                     where: {
                         or: [
