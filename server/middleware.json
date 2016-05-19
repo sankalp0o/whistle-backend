@@ -40,10 +40,5 @@
       ]
     }
   },
-  "files": {},
-  "final": {
-    "loopback#urlNotFound": {}
-  },
-  "final:after": {
-  }
+  "files": {}
 }

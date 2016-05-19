@@ -6,7 +6,6 @@ module.exports = function(User) {
 
         User.find({},
             function(err, users) {
-
                 UserMapping.find({
                     where: {
                         or: [
@@ -18,34 +17,22 @@ module.exports = function(User) {
                     for (var i = 0; i < users.length; i++) {
                         var receivers = _.map(userMappingResponse,
                             function(userMapping) {
-                                // console.log()
-                                // console.log(userMapping.receiver, userMapping.sender, users[i].id);
                                 if (userMapping.receiver == users[i].id) {
                                     users[i].status = userMapping.status;
-                                	users[i].userMappingId = userMapping.id;
+                                    users[i].userMappingId = userMapping.id;
                                     users[i].sender = false;
-                                    // console.log("receiver");
                                 } else if (userMapping.sender == users[i].id) {
-                                	users[i].userMappingId = userMapping.id;
+                                    users[i].userMappingId = userMapping.id;
                                     users[i].status = userMapping.status;
                                     users[i].sender = true;
-                                    // console.log("sender");
                                 }
                                 return;
                             });
-                        // console.log("receivers --------", receivers);
-                        // var senders = _.find(userMappingResponse,
-                        //     function(userMapping) {
-                        //         return userMapping.sender === users[i].id;
-                        //     });
-                        // console.log("senders --------", senders);
                     }
                     var response = users;
                     callback(null, response);
 
                 });
-
-
             });
     };
 
