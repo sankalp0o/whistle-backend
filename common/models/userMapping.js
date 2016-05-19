@@ -8,7 +8,8 @@ module.exports = function(UserMapping) {
         console.log(userId);
         UserMapping.find({
                 where: {
-                    receiver: userId
+                    receiver: userId,
+                    status : "initiated"
                 }
             },
             function(err, userMappingResponse) {
