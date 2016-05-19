@@ -22,14 +22,15 @@ module.exports = function(User) {
                                 // console.log(userMapping.receiver, userMapping.sender, users[i].id);
                                 if (userMapping.receiver == users[i].id) {
                                     users[i].status = userMapping.status;
+                                	users[i].userMappingId = userMapping.id;
                                     users[i].sender = false;
                                     // console.log("receiver");
                                 } else if (userMapping.sender == users[i].id) {
+                                	users[i].userMappingId = userMapping.id;
                                     users[i].status = userMapping.status;
                                     users[i].sender = true;
                                     // console.log("sender");
                                 }
-                                users[i].userMappingId = userMapping.id;
                                 return;
                             });
                         // console.log("receivers --------", receivers);
