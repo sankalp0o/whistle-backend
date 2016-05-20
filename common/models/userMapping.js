@@ -5,63 +5,45 @@ module.exports = function(UserMapping) {
 
     UserMapping.getNotification = function(userId, callback) {
         var user = UserMapping.app.models.user;
-        console.log(userId);
+        if (!userId) {
+            return callback({ name: "User id not found", message: "please specify userId", status: 400 })
+        }
         UserMapping.find({
                 where: {
                     receiver: userId,
-                    status : "initiated"
+                    status: "initiated"
                 }
             },
             function(err, userMappingResponse) {
-                // console.log("userMappingResponse------", userMappingResponse.sender);
                 var senderIds = [];
-                if (userMappingResponse) {
+                if (userMappingResponse && userMappingResponse.length > 0) {
                     for (var i = userMappingResponse.length - 1; i >= 0; i--) {
                         senderIds.push(userMappingResponse[i].sender);
                     }
-                    console.log("senderIds----------", senderIds);
                     user.find({
                         where: {
                             id: { inq: senderIds }
-                            // id: senderIds[0]
                         }
                     }, function(err, pendingUsers) {
                         console.log("pending users", pendingUsers);
                         var response;
 
-                        // function customizer(objValue, srcValue) {
-                        //     if (objValue.id === srcValue.receiver) {
-                        //         srcValue.name = objValue.name
-                        //         return srcValue;
-                        //     }
-                        // }
-                        // var response = _.mergeWith(pendingUsers, userMappingResponse, customizer);;
                         function mergeByProperty(pendingUsers, userMappingResponse) {
                             _.each(pendingUsers, function(pendingUsersobj) {
                                 var userMappingResponseobj = _.filter(userMappingResponse, function(userMappingResponseobj) {
-                                    // console.log("----------", userMappingResponseobj, pendingUsersobj);
                                     if (userMappingResponseobj) {
                                         pendingUsersobj.status = userMappingResponseobj.status
                                         pendingUsersobj.userMappingId = userMappingResponseobj.id
                                     }
                                     return userMappingResponseobj.receiver === pendingUsersobj.id;
-
                                 });
-                                // console.log("userMappingResponseobj----------",userMappingResponseobj);
-                                // console.log("pendingUsersobj----------",pendingUsersobj);
-                                //If the object already exist extend it with the new values from userMappingResponse, otherwise just add the new object to pendingUsers
-                                // _.assignIn(pendingUsersobj, userMappingResponseobj.status);
                             });
                         }
-
                         mergeByProperty(pendingUsers, userMappingResponse);
-
-                        console.log("response ---------", pendingUsers);
                         callback(null, pendingUsers);
                     });
-
                 } else {
-                    callback(null, "no data");
+                    return callback(null, "You have no pending requests")
                 }
             });
     };
@@ -82,26 +64,36 @@ module.exports = function(UserMapping) {
 
     UserMapping.getRelation = function(userMappingId, userId, callback) {
         var user = UserMapping.app.models.user;
-        console.log(userMappingId, userId);
+        if (!userId) {
+            return callback({ name: "User id not found", message: "please specify userId", status: 400 })
+        }
+        if (!userMappingId) {
+            return callback({ name: "User mapping id not found", message: "please specify userMappingId", status: 400 })
+        }
         UserMapping.find({
                 where: {
                     id: userMappingId
                 }
             },
             function(err, userMappingResponse) {
-                console.log("userMappingResponse------", userMappingResponse);
-                user.find({
-                    where: {
-                        id: userId
-                    }
-                }, function(err, pendingUsers) {
-                    console.log("pending users", pendingUsers);
-                    var response;
-                    pendingUsers[0].status = userMappingResponse[0].status;
-                    pendingUsers[0].userMappingId = userMappingResponse[0].id;
-                    console.log("response ---------", pendingUsers);
-                    callback(null, pendingUsers);
-                });
+                if (userMappingResponse && userMappingResponse.length > 0) {
+                    user.find({
+                        where: {
+                            id: userId
+                        }
+                    }, function(err, pendingUsers) {
+                        if (pendingUsers && pendingUsers.length > 0) {
+                            var response;
+                            pendingUsers[0].status = userMappingResponse[0].status;
+                            pendingUsers[0].userMappingId = userMappingResponse[0].id;
+                            callback(null, pendingUsers);
+                        } else {
+                            return callback({ name: "User is not defined", message: "There is no user specified for this id", status: 400 })
+                        }
+                    });
+                } else {
+                    return callback({ name: "User mapping not defined", message: "There is no user mapping specified for this userMappingId", status: 400 })
+                }
 
             });
     };
